@@ -62,20 +62,3 @@ jobs:
         name: TagMo-${{ env.GIT_HASH }}
         path: |
           ${{steps.sign_main.outputs.signedReleaseFile}}
-
-    - uses: dciborow/action-github-releases@v1.0.1
-      if: github.event_name != 'pull_request'
-      with:
-        repo_token: "${{ secrets.GITHUB_TOKEN }}"
-        automatic_release_tag: ${{ env.GIT_BRANCH }}
-        prerelease: ${{ env.GIT_BRANCH != 'master' }}
-        title: TagMo-${{ env.GIT_HASH }}
-        files: |
-          ${{steps.sign_main.outputs.signedReleaseFile}}
-
-    - name: Discord webhook notification
-      uses: distributhor/workflow-webhook@v3.0.4
-      env:
-        webhook_type: 'json-extended'
-        webhook_url: 'https://discord.com/api/webhooks/1109893889340485632/Vd-DqFhZWlfu86C8UqNxv8Z47WHm8aJC9eWZcu7ggC0lnFboeOHS9hUNdO6J2nowPsmP/github'
-        data: '{ "download": "${{ env.APK_LINK }}" }'

@@ -511,14 +511,6 @@ class EliteBankFragment : Fragment(), EliteBankAdapter.OnAmiiboClickListener {
                 activeBank = intent.getIntExtra(NFCIntent.EXTRA_ACTIVE_BANK, activeBank)
                 prefs.eliteActiveBank(activeBank)
             }
-            setRefreshListener(object : RefreshListener {
-                override fun onListRefreshed(amiibos: ArrayList<EliteTag?>) {
-                    amiibos[activeBank]?.let {
-                        updateAmiiboView(amiiboTile, null, it.id, activeBank)
-                    }
-                    removeRefreshListener()
-                }
-            })
             if (intent.hasExtra(NFCIntent.EXTRA_AMIIBO_CLONES)) {
                 updateEliteAdapter(intent.getStringArrayListExtra(NFCIntent.EXTRA_AMIIBO_CLONES))
             }
@@ -529,6 +521,9 @@ class EliteBankFragment : Fragment(), EliteBankAdapter.OnAmiiboClickListener {
                 amiibos[clickedPosition] = null
             } else {
                 bottomSheet?.state = BottomSheetBehavior.STATE_EXPANDED
+            }
+            amiibos[activeBank]?.let {
+                updateAmiiboView(amiiboTile, null, it.id, activeBank)
             }
         }
     }
@@ -870,15 +865,10 @@ class EliteBankFragment : Fragment(), EliteBankAdapter.OnAmiiboClickListener {
             prefs.eliteBankCount(bankCount)
             eliteBankCount.value = bankCount
             val activeBank = prefs.eliteActiveBank()
-            setRefreshListener(object : RefreshListener {
-                override fun onListRefreshed(amiibos: ArrayList<EliteTag?>) {
-                    amiibos[activeBank]?.let {
-                        updateAmiiboView(amiiboTile, null, it.id, activeBank)
-                    }
-                    removeRefreshListener()
-                }
-            })
             updateEliteAdapter(intent.getStringArrayListExtra(NFCIntent.EXTRA_AMIIBO_CLONES))
+            amiibos[activeBank]?.let {
+                updateAmiiboView(amiiboTile, null, it.id, activeBank)
+            }
 
             bankStats?.text = getString(R.string.bank_stats, getValueForPosition(
                 eliteBankCount, prefs.eliteActiveBank()
